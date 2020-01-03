@@ -75,7 +75,13 @@
         [self.scanner stopScanning];
          AVMetadataMachineReadableCodeObject *code = codes.firstObject;
         if (code) {
-            [self.delegate barcodeScannerViewController:self didScanBarcodeWithResult:code.stringValue];
+            NSString *rs;
+            if ([code.type rangeOfString: @"QRCode"].location != NSNotFound) {
+                rs = [NSString stringWithFormat:@"%@=%@", @"QRCODE", code.stringValue];
+            } else {
+                rs = [NSString stringWithFormat:@"%@=%@", code.type, code.stringValue];
+            }
+            [self.delegate barcodeScannerViewController:self didScanBarcodeWithResult:rs];
             [self dismissViewControllerAnimated:NO completion:nil];
         }
     } error:&error];
