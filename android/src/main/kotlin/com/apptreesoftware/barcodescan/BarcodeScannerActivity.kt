@@ -10,9 +10,9 @@ import androidx.core.content.ContextCompat
 import android.view.Menu
 import android.view.MenuItem
 import com.google.zxing.Result
+import com.google.zxing.BarcodeFormat
 import me.dm7.barcodescanner.zxing.ZXingScannerView
-
-
+import android.util.Log
 class BarcodeScannerActivity : Activity(), ZXingScannerView.ResultHandler {
 
     lateinit var scannerView: me.dm7.barcodescanner.zxing.ZXingScannerView
@@ -69,9 +69,15 @@ class BarcodeScannerActivity : Activity(), ZXingScannerView.ResultHandler {
         scannerView.stopCamera()
     }
 
-    override fun handleResult(result: Result?) {
+    override fun handleResult(result: Result) {
         val intent = Intent()
-        intent.putExtra("SCAN_RESULT", result.toString())
+        var _codeType = "QRCODE"
+        var _formatName = result.getBarcodeFormat()
+        if (_formatName != BarcodeFormat.QR_CODE) {
+            _codeType = _formatName.toString()
+        }
+
+        intent.putExtra("SCAN_RESULT", _codeType + "=" +result.toString())
         setResult(Activity.RESULT_OK, intent)
         finish()
     }
